@@ -1,9 +1,9 @@
 from abc import abstractmethod
-from abc import ABCMeta
+from abc import ABC
 from typing import Any
 
 
-class AbstractProcessor(metaclass=ABCMeta):
+class AbstractProcessor(ABC):
 
     @abstractmethod
     def process_event(self, event: dict) -> Any:

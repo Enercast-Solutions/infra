@@ -1,7 +1,7 @@
 import json
 
-def handler(event, context):
+def handler(event: dict, context: dict) -> dict:
     return {
         "statusCode": 403,
-        "body": json.dumps({"error_msg": "Forbidden"})
+        "body": json.dumps({"message": "Forbidden"})
     }
