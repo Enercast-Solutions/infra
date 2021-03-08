@@ -2,11 +2,12 @@ import sys
 import os
 sys.path.append(".")
 
-import time
+import json
 from enercast_api.db import DynamoDBInterface
 from enercast_api.environment import user_table_name
 from enercast_api.db import load_user
-from enercast_api.request_processor import AuthContextProcessor
+from enercast_api.request_processor import AuthContextProcessor, PredictionParametersProcessor
+from enercast_api.controllers.user import SubmitPredictionController
 
 
 def handler(event: dict, context: dict) -> dict:
@@ -16,11 +17,9 @@ def handler(event: dict, context: dict) -> dict:
     #   information to lambda function from the authorizer.
     auth_context = AuthContextProcessor().process_event({"username": "vale"})
 
-    # TODO: load prediction information from request
+    prediction_parameters = PredictionParametersProcessor().process_event(json.loads(event["body"]))
 
-    time_submitted = str(time.time())
-
-    # TODO: incorporate controller for submit prediction
+    SubmitPredictionController(user_db, auth_context, prediction_parameters).execute()
 
     return {
         "statusCode": 200,

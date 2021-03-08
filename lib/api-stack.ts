@@ -77,6 +77,10 @@ export class APIStack extends cdk.Stack {
         // -----------------------------
         const api = new apigatewayv2.HttpApi(this, 'Api');
 
+        new cdk.CfnOutput(this, 'ApiEndpoint', {
+            value: api.apiEndpoint
+        });
+
         api.addRoutes({
             path: '/user',
             methods: [apigatewayv2.HttpMethod.GET],

@@ -14,7 +14,7 @@ class SubmitPredictionController(AbstractController):
         self._auth_context = auth_context
         self._prediction_parameters = prediction_parameters
 
-    def execute(self) -> dict:
+    def execute(self) -> None:
         user = load_user(self._user_db, self._auth_context.id)
 
         prediction = PredictionFactory.create_default_prediction(self._prediction_parameters)
@@ -25,5 +25,3 @@ class SubmitPredictionController(AbstractController):
 
         # Sure, we're making a 2nd call to the DB...but who cares?
         self._user_db.create_or_update(user.id, user.serialize())
-
-        return user.serialize()
