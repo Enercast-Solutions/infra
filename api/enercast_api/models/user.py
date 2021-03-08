@@ -1,4 +1,5 @@
 from typing import List
+from .prediction import Prediction
 
 
 class User:
@@ -6,7 +7,7 @@ class User:
     def __init__(self,
                  id: str,
                  cc_info: dict,
-                 energy_consumption_predictions: List[dict]):
+                 energy_consumption_predictions: List[Prediction]):
         self._id = id
         self._cc_info = cc_info
         self._energy_consumption_predictions = energy_consumption_predictions
@@ -20,24 +21,31 @@ class User:
         return self._cc_info
 
     @property
-    def energy_consumption_predictions(self) -> List[dict]:
+    def energy_consumption_predictions(self) -> List[Prediction]:
         return self._energy_consumption_predictions
 
-    def add_prediction(self, new_prediction: dict) -> None:
+    def add_prediction(self, new_prediction: Prediction) -> None:
         self._energy_consumption_predictions.append(new_prediction)
 
     def serialize(self) -> dict:
         return {
             "ID": self._id,
             "cc_info": self._cc_info,
-            "energy_consumption_predictions": self._energy_consumption_predictions
+            "energy_consumption_predictions": self.serialize_predictions()
         }
+
+    def serialize_predictions(self) -> List[dict]:
+        return [pred.serialize() for pred in self._energy_consumption_predictions]
 
     @staticmethod
     def deserialize(serialized_data: dict):
         return User(serialized_data["ID"],
                     serialized_data["cc_info"],
-                    serialized_data["energy_consumption_predictions"])
+                    User.deserialize_predictions(serialized_data["energy_consumption_predictions"]))
+
+    @staticmethod
+    def deserialize_predictions(serialized_data: List[dict]) -> List[Prediction]:
+        return [Prediction.deserialize(pred) for pred in serialized_data]
 
     def __eq__(self, other) -> bool:
         return (type(self) == type(other)) and \

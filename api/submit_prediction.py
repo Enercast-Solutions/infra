@@ -2,12 +2,11 @@ import sys
 import os
 sys.path.append(".")
 
-import json
+import time
 from enercast_api.db import DynamoDBInterface
 from enercast_api.environment import user_table_name
 from enercast_api.db import load_user
 from enercast_api.request_processor import AuthContextProcessor
-from enercast_api.controllers.user import GetUserController
 
 
 def handler(event: dict, context: dict) -> dict:
@@ -17,12 +16,13 @@ def handler(event: dict, context: dict) -> dict:
     #   information to lambda function from the authorizer.
     auth_context = AuthContextProcessor().process_event({"username": "vale"})
 
-    controller = GetUserController(user_db, auth_context)
-    serialized_user = controller.execute()
+    # TODO: load prediction information from request
+
+    time_submitted = str(time.time())
+
+    # TODO: incorporate controller for submit prediction
 
     return {
         "statusCode": 200,
-        "body": json.dumps({
-            "user": serialized_user
-        })
+        "body": "{}"
     }

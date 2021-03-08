@@ -1,5 +1,5 @@
 from .utils import load_user
-from ..models import UserFactory
+from ..models import UserFactory, PredictionFactory
 from .in_memory import InMemoryDBInterface
 
 
@@ -7,9 +7,9 @@ def test_load_user_pass_exists() -> None:
     db = InMemoryDBInterface()
 
     id = "vale"
-    new_prediction = {
+    new_prediction = PredictionFactory.create_default_prediction({
         "fjdssdlf": "sdfasdffssdf"
-    }
+    })
     user = UserFactory.create_default_user(id)
     user.add_prediction(new_prediction)
 

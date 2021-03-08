@@ -1,10 +1,11 @@
-from .auth import AuthProcessor
+from .auth import AuthContextProcessor
+from ..models import AuthContext
 
 
 def test_process_event() -> None:
     test_event = {
         "username": "vale"
     }
-    processor = AuthProcessor()
+    processor = AuthContextProcessor()
 
-    assert processor.process_event(test_event) == test_event["username"]
+    assert processor.process_event(test_event) == AuthContext(test_event["username"])
