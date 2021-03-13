@@ -14,6 +14,17 @@ const deploymentEnv = {
 
 const app = new cdk.App();
 
-new EnergyConsumptionPredStack(app, 'EnergyConsumptionPredStack', { env: deploymentEnv });
+const energyConsumptionPredStack =  new EnergyConsumptionPredStack(
+    app,
+    'EnergyConsumptionPredStack',
+    { env: deploymentEnv }
+);
 
-new APIStack(app, 'ApiStack', { env: deploymentEnv });
+new APIStack(
+    app,
+    'ApiStack',
+    {
+        env: deploymentEnv,
+        predictionService: energyConsumptionPredStack.output.serviceUrl
+    }
+);

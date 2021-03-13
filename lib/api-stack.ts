@@ -3,11 +3,17 @@ import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2';
 import * as apigatewayv2_integrations from '@aws-cdk/aws-apigatewayv2-integrations';
 import * as cognito from '@aws-cdk/aws-cognito';
 import * as lambda from '@aws-cdk/aws-lambda';
+import * as lambdaPython from '@aws-cdk/aws-lambda-python';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
+
+export interface APIStackProps {
+    env: cdk.Environment;
+    predictionService: string;
+}
 
 export class APIStack extends cdk.Stack {
 
-    constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
+    constructor(scope: cdk.Construct, id: string, props: APIStackProps) {
         super(scope, id, props);
 
         // ------------------------------
@@ -50,10 +56,11 @@ export class APIStack extends cdk.Stack {
             code: lambda.Code.fromAsset('api')
         });
 
-        const getUserHandler = new lambda.Function(this, 'GetUserHandler', {
+        const getUserHandler = new lambdaPython.PythonFunction(this, 'GetUserHandler', {
             runtime: lambda.Runtime.PYTHON_3_8,
-            handler: 'get_user.handler',
-            code: lambda.Code.fromAsset('api'),
+            handler: 'handler',
+            entry: 'api',
+            index: 'get_user.py',
             tracing: lambda.Tracing.ACTIVE,
             environment: {
                 "USER_TABLE_NAME": userTable.tableName
@@ -61,21 +68,24 @@ export class APIStack extends cdk.Stack {
         });
         userTable.grantReadWriteData(getUserHandler);
 
-        const submitPredictionHandler = new lambda.Function(this, 'SubmitPredictionHandler', {
+        const submitPredictionHandler = new lambdaPython.PythonFunction(this, 'SubmitPredictionHandler', {
             runtime: lambda.Runtime.PYTHON_3_8,
-            handler: 'submit_prediction.handler',
-            code: lambda.Code.fromAsset('api'),
+            handler: 'handler',
+            entry: 'api',
+            index: 'submit_prediction.py',
             tracing: lambda.Tracing.ACTIVE,
             environment: {
-                "USER_TABLE_NAME": userTable.tableName
+                "USER_TABLE_NAME": userTable.tableName,
+                "PREDICTION_SERVICE_ENDPOINT": props.predictionService
             }
         });
         userTable.grantReadWriteData(submitPredictionHandler);
 
-        const submitCCInfoHandler = new lambda.Function(this, 'SubmitCCInfoHandler', {
+        const submitCCInfoHandler = new lambdaPython.PythonFunction(this, 'SubmitCCInfoHandler', {
             runtime: lambda.Runtime.PYTHON_3_8,
-            handler: 'submit_cc_info.handler',
-            code: lambda.Code.fromAsset('api'),
+            handler: 'handler',
+            entry: 'api',
+            index: 'submit_cc_info.py',
             tracing: lambda.Tracing.ACTIVE,
             environment: {
                 "USER_TABLE_NAME": userTable.tableName

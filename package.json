@@ -24,6 +24,7 @@
     "@aws-cdk/aws-ecs": "^1.93.0",
     "@aws-cdk/aws-ecs-patterns": "^1.93.0",
     "@aws-cdk/aws-lambda": "^1.93.0",
+    "@aws-cdk/aws-lambda-python": "^1.93.0",
     "@aws-cdk/core": "1.93.0",
     "source-map-support": "^0.5.16"
   }

@@ -26,9 +26,9 @@ Run `./test.sh`
 Given an API endpoint, the following are sample curl requests:
 
 ```
-curl -X POST -H "Content-Type: application/json" --data '{"prediction_parameters":{"id": "123423425555555"}}' https://ewibuq9g18.execute-api.us-east-2.amazonaws.com/user/submit_prediction
+curl -X POST -H "Content-Type: application/json" --data '{"prediction_parameters":{"start_date": "2020-05-12", "end_date": "2020-05-17", "setup_days": "5", "teardown_days": "2", "forecast_attendance": "10000", "is_audio": "1"}}' https://ewibuq9g18.execute-api.us-east-2.amazonaws.com/user/submit_prediction
 
 curl -X GET https://ewibuq9g18.execute-api.us-east-2.amazonaws.com/user
 
-curl -X POST -H "Content-Type: application/json" --data '{"cc_info":{"num_rooms": "100"}}' https://ewibuq9g18.execute-api.us-east-2.amazonaws.com/user/submit_cc_info
+curl -X POST -H "Content-Type: application/json" --data '{"cc_info":{"sqft": "100000"}}' https://ewibuq9g18.execute-api.us-east-2.amazonaws.com/user/submit_cc_info
 ```

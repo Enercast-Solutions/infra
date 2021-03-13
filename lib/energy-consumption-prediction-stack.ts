@@ -2,7 +2,12 @@ import * as cdk from '@aws-cdk/core';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 
+export interface EnergyConsumptionPredStackOutput {
+    serviceUrl: string;
+}
+
 export class EnergyConsumptionPredStack extends cdk.Stack {
+  output: EnergyConsumptionPredStackOutput;
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -16,5 +21,9 @@ export class EnergyConsumptionPredStack extends cdk.Stack {
         },
         desiredCount: 1,
     });
+
+    this.output = {
+        serviceUrl: service.loadBalancer.loadBalancerDnsName
+    };
   }
 }
