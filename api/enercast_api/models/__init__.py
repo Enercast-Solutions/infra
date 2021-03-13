@@ -1,3 +1,4 @@
+from .cc_info import ConventionCenterInfo
 from .prediction import Prediction
 from .prediction_factory import PredictionFactory
 from .user import User

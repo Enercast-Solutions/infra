@@ -72,6 +72,17 @@ export class APIStack extends cdk.Stack {
         });
         userTable.grantReadWriteData(submitPredictionHandler);
 
+        const submitCCInfoHandler = new lambda.Function(this, 'SubmitCCInfoHandler', {
+            runtime: lambda.Runtime.PYTHON_3_8,
+            handler: 'submit_cc_info.handler',
+            code: lambda.Code.fromAsset('api'),
+            tracing: lambda.Tracing.ACTIVE,
+            environment: {
+                "USER_TABLE_NAME": userTable.tableName
+            }
+        });
+        userTable.grantReadWriteData(submitCCInfoHandler);
+
         // -----------------------------
         // ------------ API ------------
         // -----------------------------
@@ -94,6 +105,14 @@ export class APIStack extends cdk.Stack {
             methods: [apigatewayv2.HttpMethod.POST],
             integration: new apigatewayv2_integrations.LambdaProxyIntegration({
                 handler: submitPredictionHandler
+            })
+        });
+
+        api.addRoutes({
+            path: '/user/submit_cc_info',
+            methods: [apigatewayv2.HttpMethod.POST],
+            integration: new apigatewayv2_integrations.LambdaProxyIntegration({
+                handler: submitCCInfoHandler
             })
         });
     }

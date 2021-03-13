@@ -1,5 +1,5 @@
 from .submit_prediction import SubmitPredictionController
-from ...models import UserFactory, AuthContext, User
+from ...models import AuthContext, User
 from ...db import InMemoryDBInterface
 
 

@@ -23,5 +23,4 @@ class SubmitPredictionController(AbstractController):
 
         user.add_prediction(prediction)
 
-        # Sure, we're making a 2nd call to the DB...but who cares?
         self._user_db.create_or_update(user.id, user.serialize())

@@ -20,6 +20,10 @@ class User:
     def cc_info(self) -> dict:
         return self._cc_info
 
+    @cc_info.setter
+    def cc_info(self, new_cc_info: dict) -> None:
+        self._cc_info = new_cc_info
+
     @property
     def energy_consumption_predictions(self) -> List[Prediction]:
         return self._energy_consumption_predictions
