@@ -14,7 +14,7 @@ with open('model.pkl', 'rb') as f:
 
 def process_request(data: dict) -> List[Any]:
     # Model parameters:
-    # ['Event Days', 'SQFT per Event', 'Forecast Attendance', 'avgTmp', 'Total Days (In-Out)', 'isAudio', 'sqrtAttn']
+    # ['Event Days', 'SQFT per Event', 'Forecast Attendance', 'avgTmp', 'isAudio', 'sqrtAttn']
 
     start_iso_date = datetime.strptime(data["start_date"],'%Y-%m-%d')
     end_iso_date = datetime.strptime(data["end_date"],'%Y-%m-%d')

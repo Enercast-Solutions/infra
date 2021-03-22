@@ -3,6 +3,7 @@ from ...db import DB, load_user
 from ...models import AuthContext, PredictionFactory, User, Prediction
 import requests
 from typing import Dict
+from time import time
 from ...environment import prediction_service_endpoint
 
 
@@ -22,7 +23,7 @@ class SubmitPredictionController(AbstractController):
             "end_date": prediction.prediction_parameters["end_date"],
             "setup_days": prediction.prediction_parameters["setup_days"],
             "teardown_days": prediction.prediction_parameters["teardown_days"],
-            "sqft": user.cc_info["sqft"],
+            "sqft": prediction.prediction_parameters["sqft"],
             "forecast_attendance": prediction.prediction_parameters["forecast_attendance"],
             "is_audio": prediction.prediction_parameters["is_audio"],
         }
@@ -32,12 +33,15 @@ class SubmitPredictionController(AbstractController):
 
         return response.json()
 
-    def execute(self) -> None:
+    def execute(self) -> Dict[str, str]:
         user = load_user(self._user_db, self._auth_context.id)
 
         prediction = PredictionFactory.create_default_prediction(self._prediction_parameters)
         prediction.prediction_results = self.call_prediction_service(user, prediction)
+        prediction.time_completed = str(time())
 
         user.add_prediction(prediction)
 
         self._user_db.create_or_update(user.id, user.serialize())
+
+        return prediction.prediction_results

@@ -19,9 +19,9 @@ def handler(event: dict, context: dict) -> dict:
 
     prediction_parameters = PredictionParametersProcessor().process_event(json.loads(event["body"]))
 
-    SubmitPredictionController(user_db, auth_context, prediction_parameters).execute()
+    output = SubmitPredictionController(user_db, auth_context, prediction_parameters).execute()
 
     return {
         "statusCode": 200,
-        "body": "{}"
+        "body": json.dumps(output)
     }

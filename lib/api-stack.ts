@@ -96,7 +96,20 @@ export class APIStack extends cdk.Stack {
         // -----------------------------
         // ------------ API ------------
         // -----------------------------
-        const api = new apigatewayv2.HttpApi(this, 'Api');
+        const api = new apigatewayv2.HttpApi(this, 'Api', {
+            corsPreflight: {
+                allowHeaders: ['Authorization', 'Content-Type'],
+                allowMethods: [
+                    apigatewayv2.HttpMethod.GET,
+                    apigatewayv2.HttpMethod.HEAD,
+                    apigatewayv2.HttpMethod.OPTIONS,
+                    apigatewayv2.HttpMethod.POST
+                ],
+                allowCredentials: false,
+                allowOrigins: ['*'],
+                maxAge: cdk.Duration.days(1),
+            },
+        });
 
         new cdk.CfnOutput(this, 'ApiEndpoint', {
             value: api.apiEndpoint
