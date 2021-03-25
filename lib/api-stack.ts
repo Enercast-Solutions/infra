@@ -1,10 +1,10 @@
 import * as cdk from '@aws-cdk/core';
 import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2';
 import * as apigatewayv2_integrations from '@aws-cdk/aws-apigatewayv2-integrations';
-import * as cognito from '@aws-cdk/aws-cognito';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as lambdaPython from '@aws-cdk/aws-lambda-python';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
+import * as apigatewayv2_authorizers from '@aws-cdk/aws-apigatewayv2-authorizers';
 
 export interface APIStackProps {
     env: cdk.Environment;
@@ -15,26 +15,6 @@ export class APIStack extends cdk.Stack {
 
     constructor(scope: cdk.Construct, id: string, props: APIStackProps) {
         super(scope, id, props);
-
-        // ------------------------------
-        // ------------ AUTH ------------
-        // ------------------------------
-        const userPool = new cognito.UserPool(this, 'UserPool', {
-            userPoolName: 'enercast-userpool',
-            selfSignUpEnabled: true,
-            signInAliases: {
-                username: true,
-                email: true
-            }
-        });
-
-        const userPoolClient1 = userPool.addClient('react-client', {
-            preventUserExistenceErrors: true
-        });
-
-        /*const apiAuth = new apigateway.CognitoUserPoolsAuthorizer(this, 'UserPoolAuthorizer', {
-            cognitoUserPool: [userPool]
-        });*/
 
         // ----------------------------------
         // ------------ DynamoDB ------------
@@ -96,14 +76,21 @@ export class APIStack extends cdk.Stack {
         // -----------------------------
         // ------------ API ------------
         // -----------------------------
+        // NOTE: The following authorizer information is using the infrastructure deployed by Amplify
+        const authorizer = new apigatewayv2_authorizers.HttpJwtAuthorizer({
+            jwtAudience: ['18dbpvsphlv3pl0vqq49vnfhn6', '2ocbukrlahfa5l9d595llbtfm5'],
+            jwtIssuer: 'https://cognito-idp.us-east-2.amazonaws.com/us-east-2_qtBoat5ir',
+        });
+
         const api = new apigatewayv2.HttpApi(this, 'Api', {
+            defaultAuthorizer: authorizer,
             corsPreflight: {
                 allowHeaders: ['Authorization', 'Content-Type'],
                 allowMethods: [
-                    apigatewayv2.HttpMethod.GET,
-                    apigatewayv2.HttpMethod.HEAD,
-                    apigatewayv2.HttpMethod.OPTIONS,
-                    apigatewayv2.HttpMethod.POST
+                    apigatewayv2.CorsHttpMethod.GET,
+                    apigatewayv2.CorsHttpMethod.HEAD,
+                    apigatewayv2.CorsHttpMethod.OPTIONS,
+                    apigatewayv2.CorsHttpMethod.POST
                 ],
                 allowCredentials: false,
                 allowOrigins: ['*'],

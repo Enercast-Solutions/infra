@@ -13,9 +13,7 @@ from enercast_api.controllers.user import GetUserController
 def handler(event: dict, context: dict) -> dict:
     user_db = DynamoDBInterface(user_table_name())
 
-    # TODO: load user from request, not hardcoded. Need to understand how Cognito passes identity
-    #   information to lambda function from the authorizer.
-    auth_context = AuthContextProcessor().process_event({"username": "vale"})
+    auth_context = AuthContextProcessor().process_event(event)
 
     controller = GetUserController(user_db, auth_context)
     serialized_user = controller.execute()

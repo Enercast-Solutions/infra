@@ -13,9 +13,7 @@ from enercast_api.controllers.user import SubmitCCInfoController
 def handler(event: dict, context: dict) -> dict:
     user_db = DynamoDBInterface(user_table_name())
 
-    # TODO: load user from request, not hardcoded. Need to understand how Cognito passes identity
-    #   information to lambda function from the authorizer.
-    auth_context = AuthContextProcessor().process_event({"username": "vale"})
+    auth_context = AuthContextProcessor().process_event(event)
 
     cc_info = CCInfoProcessor().process_event(json.loads(event["body"]))
 
