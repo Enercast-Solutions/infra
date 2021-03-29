@@ -27,6 +27,14 @@ export class APIStack extends cdk.Stack {
             }
         });
 
+        const contactUsRequestsTable = new dynamodb.Table(this, 'ContactUsRequests', {
+            billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+            partitionKey: {
+                name: 'ID',
+                type: dynamodb.AttributeType.STRING
+            }
+        });
+
         // --------------------------------
         // ------------ LAMBDA ------------
         // --------------------------------
@@ -72,6 +80,18 @@ export class APIStack extends cdk.Stack {
             }
         });
         userTable.grantReadWriteData(submitCCInfoHandler);
+
+        const submitContactUs = new lambdaPython.PythonFunction(this, 'SubmitContactUsHandler', {
+            runtime: lambda.Runtime.PYTHON_3_8,
+            handler: 'handler',
+            entry: 'api',
+            index: 'submit_contact_us.py',
+            tracing: lambda.Tracing.ACTIVE,
+            environment: {
+                "CONTACT_US_REQUESTS_TABLE_NAME": contactUsRequestsTable.tableName
+            }
+        });
+        contactUsRequestsTable.grantReadWriteData(submitContactUs);
 
         // -----------------------------
         // ------------ API ------------
@@ -123,6 +143,14 @@ export class APIStack extends cdk.Stack {
             methods: [apigatewayv2.HttpMethod.POST],
             integration: new apigatewayv2_integrations.LambdaProxyIntegration({
                 handler: submitCCInfoHandler
+            })
+        });
+
+        api.addRoutes({
+            path: '/user/submit_contact_us',
+            methods: [apigatewayv2.HttpMethod.POST],
+            integration: new apigatewayv2_integrations.LambdaProxyIntegration({
+                handler: submitContactUs
             })
         });
     }

@@ -2,6 +2,14 @@
 
 Infrastructure
 
+## Other useful commands (not CDK related)
+
+Remove all pycache folders and pyc files:
+
+```
+find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
+```
+
 ## Useful commands
 
  * `npm run build`   compile typescript to js
