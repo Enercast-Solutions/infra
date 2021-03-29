@@ -2,6 +2,10 @@
 
 Energy Consumption Prediction Task
 
+## Deployment
+
+NOTE: For security purposes, the model files (`*.pkl`) are NOT saved in Git. You need to Manually place these files in this directory before you build and deploy in order for everything to work properly.
+
 ## Build
 
 `./build.sh`

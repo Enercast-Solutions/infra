@@ -8,3 +8,8 @@ node_modules
 cdk.out
 
 __pycache__
+
+*.pkl
+*.dat
+
+.DS_Store
