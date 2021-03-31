@@ -20,7 +20,8 @@ def process_request(data: dict) -> Tuple[List[List[Any]], int]:
     start_iso_date = datetime.strptime(data["start_date"],'%Y-%m-%d')
     end_iso_date = datetime.strptime(data["end_date"],'%Y-%m-%d')
 
-    duration_in_s = (end_iso_date - start_iso_date).total_seconds()
+    # we add a day because all days are indexed at time = 0
+    duration_in_s = (end_iso_date - start_iso_date).total_seconds() + 86400
     duration_days = divmod(duration_in_s, 86400)[0]
 
     total_days = duration_days + int(data["setup_days"]) + int(data["teardown_days"])
