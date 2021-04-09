@@ -4,7 +4,10 @@ Energy Consumption Prediction Task
 
 ## Deployment
 
-NOTE: For security purposes, the model files (`*.pkl`) are NOT saved in Git. You need to Manually place these files in this directory before you build and deploy in order for everything to work properly.
+NOTE: For security purposes, the model files (`*.pkl`) are NOT saved in Git. You need to Manually place these files in this directory before you build and deploy in order for everything to work properly. Currently, these files are named:
+
+- `xgboost.joblib.dat` -- Energy consumption model
+- `PricingModel.joblib.dat` -- Pricing model
 
 ## Build
 
