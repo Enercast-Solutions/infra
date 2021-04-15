@@ -102,6 +102,30 @@ def predict_cost(data: dict, energy_consumed: float) -> float:
     return total_cost
 
 
+def predict_baseline_cost(data: dict) -> float:
+    baseline_cost_weekday = [1195.07, 1244.49, 1076.39, 1026.48, 1033.19, 2670.87, 2877.0, 2966.68, 2687.91, 918.55, 958.32, 1073.86]
+    baseline_cost_weekend = [1065.32, 1095.21, 1085.02, 1067.74]
+
+    start_iso_date = datetime.strptime(data["start_date"],'%Y-%m-%d')
+    end_iso_date = datetime.strptime(data["end_date"],'%Y-%m-%d')
+
+    duration_days = calculate_duration_days(start_iso_date, end_iso_date)
+
+    total_cost = 0.0
+    for i in range(int(duration_days)):
+        event_day = start_iso_date + timedelta(days=i)
+
+        is_summer = calculate_is_summer(event_day)
+        is_weekend = calculate_is_weekend(event_day)
+
+        if not is_summer or not is_weekend:
+            total_cost += baseline_cost_weekday[event_day.month - 1]
+        elif is_weekend:
+            total_cost += baseline_cost_weekend[event_day.month - 6]
+
+    return total_cost
+
+
 @app.route('/')
 def index():
     return "<h1>Hello, World!</h1>"
@@ -116,8 +140,13 @@ def health():
 def energy_consumption_prediction():
     energy_consumed = predict_energy_consumption(request.get_json())
     cost = predict_cost(request.get_json(), energy_consumed)
+    baseline_cost = predict_baseline_cost(request.get_json())
 
-    return json.dumps({"energy_consumption_kwh": str(energy_consumed), "energy_consumption_cost": str(cost)})
+    return json.dumps({
+        "energy_consumption_kwh": str(energy_consumed),
+        "energy_consumption_cost": str(cost),
+        "energy_consumption_baseline_cost": str(baseline_cost)
+    })
 
 
 if __name__ == '__main__':
